@@ -1,4 +1,5 @@
-import { NiceDownload, IConfig } from './nice-download';
+import { NiceDownload } from './nice-download';
+import { IConfig } from './interfaces';
 
 const config: IConfig = {
     auth: {
@@ -6,8 +7,8 @@ const config: IConfig = {
         password: 'trni99'
     },
     videoNumber: 1,
-    url: 'https://escuela.it/cursos/curso-buenas-practicas-angular/clase/buenas-practicas-angular-i',
+    url: 'https://escuela.it/cursos/curso-de-analisis-y-diseno-orientados-a-objetos/clase/introduccion-al-analisis-y-diseno-orientados-a-objetos',
 
 }
 const ND = new NiceDownload(config);
-ND.start()
+ND.start();
