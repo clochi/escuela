@@ -18,9 +18,7 @@ export class NiceDownload {
         console.log('System ready');
         await this.page.setViewport(this.config.viewPortSize);
         await this.page.goto(this.config.url);
-        await this.page.screenshot({path: 'beforelogin.png'})
         await this.login();
-        await this.page.screenshot({path: 'afterlogin.png'})
         await this.page.goto(this.config.url);
         this.createFolder();
         this.prepareAndDownload();
@@ -34,7 +32,7 @@ export class NiceDownload {
         const nextButton = await this.page.evaluate(elem => document.querySelector(elem) , this.config.getHtmlElements().elemNextButton);
         if (nextButton) {
             await this.page.click(this.config.getHtmlElements().elemNextButton);
-            await this.page.waitFor(10000);
+            await this.page.waitFor(4000);
             this.config.videoNumber+= 1;
             await this.prepareAndDownload();
         } else {
@@ -59,40 +57,32 @@ export class NiceDownload {
 
     private async prepareAndDownload() {
         console.log('Preparing download...');
-        await this.page.waitFor(10000);
-        async function findFrame() {
-            const contentList = []
-            frames.forEach(async frame => {
-                contentList.push(frame.content());
-            });
-            const contentResolved = await Promise.all(contentList);
-            return contentResolved.find(content => {
-                const hasConfig = content.match(/var config = \{(.+)\};/);
-                return !!hasConfig;
-            })
-        }
-        // nuevo approach
+        await this.page.waitFor(4000);
         const frames = await this.page.frames();
         let video: any = await (await findFrame());
         video = JSON.parse(video.match(/var config = \{(.+)\};/)[0].match(/\{(.+)\};/)[0].replace(';', '')) as VideoObject;
-        // const pageContent = await this.page.frames()[1].content();
-        // const video = JSON.parse(pageContent.match(/var config = \{(.+)\};/)[0].match(/\{(.+)\};/)[0].replace(';', '')) as VideoObject;
         this.config.captureVideoUrl(video);
         await this.config.getVideoTitle(
             this.page,
             this.config.getHtmlElements().elemTitle
             )
-        console.log(`Downloading video ${this.config.videoTitle}`);
-        await this.download(
-            this.config.getUrlVideoCaptured(),
-            this.config.getDestinationPath(),
-            this.callbk
-        )
+            console.log(`Downloading video ${this.config.videoTitle}`);
+            await this.download(
+                this.config.getUrlVideoCaptured(),
+                this.config.getDestinationPath(),
+                this.callbk
+                )
+        async function findFrame() {
+            return (await Promise.all(frames.map(frame => frame.content())))
+                .find(content => !!content.match(/var config = \{(.+)\};/));
+        }
     }
+
+    private async 
 
     private async login() {
         console.log('Loging user...')
-        await this.page.waitFor(10000);
+        await this.page.waitFor(4000);
         await this.page.click(this.config.getHtmlElements().entrarButton);
         await this.page.click(this.config.getHtmlElements().emailInput);
         await this.page.keyboard.type(this.config.auth.email);
@@ -108,9 +98,9 @@ export class NiceDownload {
     }
 
     private async createFolder() {
-        console.log('Creating a folder for this course...')
         const folder = this.config.getFolderName();
         if (await !fs.existsSync(folder)) {
+            console.log('Creating a folder for this course...')
             await fs.mkdirSync(folder);
             console.log(`The ${folder} was created!`);
         }

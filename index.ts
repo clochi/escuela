@@ -6,7 +6,7 @@ const config: IConfig = {
         password: 'trni99'
     },
     videoNumber: 1,
-    url: 'https://escuela.it/cursos/curso-de-redux-y-angular-con-ngrx/clase/primeros-pasos-con-redux',
+    url: 'https://escuela.it/cursos/curso-buenas-practicas-angular/clase/buenas-practicas-angular-i',
 
 }
 const ND = new NiceDownload(config);

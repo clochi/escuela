@@ -1,3 +1,5 @@
 /node_modules
 /*.png
 /*.map
+/*.js
+/**/*.mp4
