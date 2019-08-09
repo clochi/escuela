@@ -81,7 +81,7 @@ export class NiceDownload {
 
     private async login() {
         console.log('Loging user...')
-        await this.page.waitForSelector(this.config.htmlElements.entrarButton)
+        await this.page.waitFor(4000);
         await this.page.click(this.config.htmlElements.entrarButton);
         await this.page.click(this.config.htmlElements.emailInput);
         await this.page.keyboard.type(this.config.auth.email);
